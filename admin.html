@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Orbit9Media — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+Malayalam:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117; --card:#1a1d27; --card2:#22263a;
+  --orbit:#1a6b3a; --orbit-b:#22913e; --gold:#f5c842;
+  --red:#e84040; --red-d:#b82f2f;
+  --muted:#8892a4; --border:#2a2e40; --white:#fff;
+  --text:#e8eaf0; --text2:#b0b8c8;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh}
+
+/* ── LOGIN ─────────────────────────────────────────── */
+#login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100;flex-direction:column;gap:24px}
+#login-screen.hide{display:none}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:40px 36px;width:360px;text-align:center}
+.login-logo{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;margin-bottom:6px}
+.login-logo span{color:var(--gold)}
+.login-sub{color:var(--muted);font-size:12px;margin-bottom:28px;letter-spacing:.08em;text-transform:uppercase}
+.login-box input{width:100%;padding:12px 16px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;margin-bottom:14px;font-family:'Inter',sans-serif}
+.login-box input:focus{border-color:var(--orbit-b)}
+.btn{padding:12px 24px;border:none;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-green{background:var(--orbit-b);color:#fff}.btn-green:hover{background:var(--orbit)}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red-d)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--text2);color:var(--text)}
+.btn-gold{background:var(--gold);color:#111}.btn-gold:hover{opacity:.9}
+.login-box .btn{width:100%}
+.err{color:var(--red);font-size:12px;margin-top:8px}
+
+/* ── LAYOUT ─────────────────────────────────────────── */
+#app{display:none;min-height:100vh}
+#app.show{display:flex;flex-direction:column}
+header{background:var(--card);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:50}
+.h-logo{font-family:'Space Mono',monospace;font-size:18px;font-weight:700}
+.h-logo span{color:var(--gold)}
+.h-badge{background:rgba(26,107,58,.25);border:1px solid var(--orbit);border-radius:4px;padding:2px 10px;font-size:11px;color:var(--orbit-b);letter-spacing:.08em;text-transform:uppercase;margin-left:10px}
+.h-right{display:flex;align-items:center;gap:12px}
+.h-url{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace}
+main{flex:1;padding:28px 32px;max-width:1300px;margin:0 auto;width:100%}
+
+/* ── STATS BAR ──────────────────────────────────────── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.stat-num{font-family:'Space Mono',monospace;font-size:30px;font-weight:700;color:var(--gold);line-height:1}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+
+/* ── TOOLBAR ────────────────────────────────────────── */
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+.toolbar h2{font-size:16px;font-weight:700;color:var(--text)}
+.toolbar-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px;outline:none;font-family:'Inter',sans-serif;width:220px}
+.search-box:focus{border-color:var(--orbit-b)}
+select.filter{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;outline:none;cursor:pointer}
+
+/* ── ARTICLES TABLE ─────────────────────────────────── */
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{background:var(--card2);color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:14px 16px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.td-title{max-width:280px}
+.td-title strong{display:block;font-size:13px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:3px}
+.td-title span{font-size:11px;color:var(--muted);font-family:'Noto Sans Malayalam',sans-serif;line-height:1.4;display:block}
+.badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.badge-hero{background:rgba(245,200,66,.15);color:var(--gold)}
+.badge-latest{background:rgba(26,107,58,.2);color:var(--orbit-b)}
+.badge-sidebar{background:rgba(80,120,200,.2);color:#7aabff}
+.badge-more{background:rgba(150,100,200,.2);color:#c09aff}
+.badge-pub{background:rgba(26,107,58,.2);color:var(--orbit-b)}
+.badge-draft{background:rgba(150,150,150,.15);color:var(--muted)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.act-btn{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .18s}
+.act-edit{background:rgba(26,107,58,.2);color:var(--orbit-b)}.act-edit:hover{background:rgba(26,107,58,.4)}
+.act-toggle{background:rgba(245,200,66,.15);color:var(--gold)}.act-toggle:hover{background:rgba(245,200,66,.3)}
+.act-del{background:rgba(232,64,64,.15);color:var(--red)}.act-del:hover{background:rgba(232,64,64,.3)}
+.td-district{font-size:11px;color:var(--muted)}
+.td-date{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;white-space:nowrap}
+.no-results{text-align:center;color:var(--muted);padding:40px;font-size:13px}
+
+/* ── MODAL ──────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.hide{display:none}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:760px;max-height:90vh;overflow-y:auto}
+.modal-head{padding:22px 28px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--card);z-index:5}
+.modal-head h3{font-size:16px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;padding:0 4px}.modal-close:hover{color:var(--text)}
+.modal-body{padding:24px 28px}
+.modal-foot{padding:16px 28px 22px;display:flex;gap:12px;justify-content:flex-end;border-top:1px solid var(--border)}
+
+/* ── FORM ───────────────────────────────────────────── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.form-group input,
+.form-group select,
+.form-group textarea{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:13px;outline:none;font-family:'Inter',sans-serif;transition:border .18s}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{border-color:var(--orbit-b)}
+.form-group textarea{resize:vertical;min-height:70px}
+.ml-input{font-family:'Noto Sans Malayalam',sans-serif!important}
+.section-divider{grid-column:1/-1;border-top:1px solid var(--border);padding-top:16px;margin-top:4px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orbit-b)}
+
+/* ── TOAST ──────────────────────────────────────────── */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 20px;font-size:13px;font-weight:600;z-index:999;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{border-color:var(--orbit-b);color:var(--orbit-b)}
+.toast.fail{border-color:var(--red);color:var(--red)}
+
+/* ── CONFIRM DIALOG ─────────────────────────────────── */
+.confirm-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:32px 28px;width:340px;text-align:center}
+.confirm-box h4{font-size:16px;margin-bottom:8px}
+.confirm-box p{font-size:13px;color:var(--muted);margin-bottom:22px}
+.confirm-btns{display:flex;gap:12px;justify-content:center}
+
+@media(max-width:700px){
+  main{padding:16px}.stats{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr}.toolbar{flex-direction:column;align-items:flex-start}
+  table{font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Orbit<span>9</span></div>
+    <div class="login-sub">Admin Panel</div>
+    <input type="password" id="pw-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="btn btn-green" onclick="doLogin()">Login →</button>
+    <div class="err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div style="display:flex;align-items:center">
+      <div class="h-logo">Orbit<span>9</span><span style="color:var(--muted);font-size:13px"> Admin</span></div>
+      <span class="h-badge">Dashboard</span>
+    </div>
+    <div class="h-right">
+      <span class="h-url" id="site-url"></span>
+      <a href="/" target="_blank" class="btn btn-ghost" style="font-size:12px;text-decoration:none">View Site ↗</a>
+      <button class="btn btn-ghost" onclick="doLogout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat-card"><div class="stat-num" id="s-total">0</div><div class="stat-label">Total Articles</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-pub">0</div><div class="stat-label">Published</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-draft">0</div><div class="stat-label">Drafts</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-dist">0</div><div class="stat-label">Districts</div></div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <h2>📰 Articles</h2>
+      <div class="toolbar-right">
+        <input class="search-box" id="search" placeholder="🔍  Search articles..." oninput="renderTable()"/>
+        <select class="filter" id="filter-type" onchange="renderTable()">
+          <option value="">All Types</option>
+          <option value="hero">Hero</option>
+          <option value="sidebar">Sidebar</option>
+          <option value="latest">Latest</option>
+          <option value="more">More</option>
+        </select>
+        <select class="filter" id="filter-pub" onchange="renderTable()">
+          <option value="">All Status</option>
+          <option value="true">Published</option>
+          <option value="false">Draft</option>
+        </select>
+        <button class="btn btn-green" onclick="openModal()">＋ Add Article</button>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Article (EN / ML)</th>
+            <th>Type</th>
+            <th>District</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="articles-tbody"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="modal-overlay hide" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-title">Add New Article</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="article-form">
+        <div class="form-grid">
+
+          <!-- META -->
+          <div class="section-divider">📋 Article Settings</div>
+
+          <div class="form-group">
+            <label>Article Type *</label>
+            <select id="f-type" required>
+              <option value="latest">Latest (main grid)</option>
+              <option value="more">More Stories (bottom grid)</option>
+              <option value="sidebar">Sidebar (next to hero)</option>
+              <option value="hero">Hero (top featured)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>District *</label>
+            <select id="f-district">
+              <option>Kerala</option>
+              <option>Thiruvananthapuram</option>
+              <option>Kollam</option>
+              <option>Pathanamthitta</option>
+              <option>Alappuzha</option>
+              <option>Kottayam</option>
+              <option>Idukki</option>
+              <option>Ernakulam</option>
+              <option>Thrissur</option>
+              <option>Palakkad</option>
+              <option>Malappuram</option>
+              <option>Kozhikode</option>
+              <option>Wayanad</option>
+              <option>Kannur</option>
+              <option>Kasaragod</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Card Colour Theme</label>
+            <select id="f-thumb">
+              <option value="ct1">Green Dark</option>
+              <option value="ct2">Green Light</option>
+              <option value="ct3">Blue Dark</option>
+              <option value="ct4">Brown</option>
+              <option value="ct5">Teal</option>
+              <option value="ct6">Olive</option>
+              <option value="ct7">Purple</option>
+              <option value="ct8">Dark Teal</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Publish Date</label>
+            <input type="date" id="f-date"/>
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            <select id="f-published">
+              <option value="true">✅ Published (live on site)</option>
+              <option value="false">📝 Draft (hidden from site)</option>
+            </select>
+          </div>
+
+          <!-- ENGLISH -->
+          <div class="section-divider">🇬🇧 English Content</div>
+
+          <div class="form-group">
+            <label>Category (EN) *</label>
+            <input type="text" id="f-cat-en" placeholder="e.g. Health Alert · Kozhikode" required/>
+          </div>
+
+          <div class="form-group">
+            <label>Source (EN)</label>
+            <input type="text" id="f-src-en" placeholder="e.g. Onmanorama · Kerala"/>
+          </div>
+
+          <div class="form-group full">
+            <label>Title (EN) *</label>
+            <input type="text" id="f-title-en" placeholder="Full English headline..." required/>
+          </div>
+
+          <div class="form-group full">
+            <label>Excerpt / Summary (EN)</label>
+            <textarea id="f-exc-en" placeholder="2-3 sentence English summary..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Meta (EN)</label>
+            <input type="text" id="f-meta-en" placeholder="e.g. June 19, 2026 · 4 min read"/>
+          </div>
+
+          <!-- MALAYALAM -->
+          <div class="section-divider">🇮🇳 Malayalam Content (മലയാളം)</div>
+
+          <div class="form-group">
+            <label>Category (ML)</label>
+            <input type="text" id="f-cat-ml" class="ml-input" placeholder="ഉദാ: ആരോഗ്യ അലേർട്ട്"/>
+          </div>
+
+          <div class="form-group">
+            <label>Source (ML)</label>
+            <input type="text" id="f-src-ml" class="ml-input" placeholder="ഉദാ: ഓൺമനോരമ · കേരളം"/>
+          </div>
+
+          <div class="form-group full">
+            <label>Title (ML)</label>
+            <input type="text" id="f-title-ml" class="ml-input" placeholder="മലയാളം തലക്കെട്ട്..."/>
+          </div>
+
+          <div class="form-group full">
+            <label>Excerpt (ML)</label>
+            <textarea id="f-exc-ml" class="ml-input" placeholder="മലയാളം സംഗ്രഹം..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Meta (ML)</label>
+            <input type="text" id="f-meta-ml" class="ml-input" placeholder="ഉദാ: ജൂൺ 19, 2026 · 4 മിനിറ്റ്"/>
+          </div>
+
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-green" onclick="saveArticle()">💾 Save Article</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE -->
+<div class="modal-overlay hide" id="confirm-overlay">
+  <div class="confirm-box">
+    <h4>Delete Article?</h4>
+    <p>This will permanently remove the article from the website. This cannot be undone.</p>
+    <div class="confirm-btns">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-red" onclick="confirmDelete()">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  let token = '';
+  let allArticles = [];
+  let editingId   = null;
+  let deletingId  = null;
+
+  // ── AUTH ──────────────────────────────────────────────
+  async function doLogin() {
+    const pw  = document.getElementById('pw-input').value;
+    const err = document.getElementById('login-err');
+    err.textContent = '';
+    try {
+      const r = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ password: pw })
+      });
+      const d = await r.json();
+      if (d.success) {
+        token = d.token;
+        sessionStorage.setItem('orbit9token', token);
+        document.getElementById('login-screen').classList.add('hide');
+        document.getElementById('app').classList.add('show');
+        document.getElementById('site-url').textContent = window.location.origin;
+        loadArticles();
+      } else {
+        err.textContent = '❌ Wrong password. Try again.';
+      }
+    } catch(e) { err.textContent = '❌ Server error. Is the server running?'; }
+  }
+
+  function doLogout() {
+    token = '';
+    sessionStorage.removeItem('orbit9token');
+    document.getElementById('app').classList.remove('show');
+    document.getElementById('login-screen').classList.remove('hide');
+    document.getElementById('pw-input').value = '';
+  }
+
+  // Auto-login from session
+  window.addEventListener('DOMContentLoaded', () => {
+    const saved = sessionStorage.getItem('orbit9token');
+    if (saved) {
+      token = saved;
+      document.getElementById('login-screen').classList.add('hide');
+      document.getElementById('app').classList.add('show');
+      document.getElementById('site-url').textContent = window.location.origin;
+      loadArticles();
+    }
+    // Set today's date as default
+    document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+  });
+
+  // ── LOAD ARTICLES ─────────────────────────────────────
+  async function loadArticles() {
+    const r = await fetch('/api/admin/articles', { headers: {'x-admin-token': token} });
+    const d = await r.json();
+    allArticles = d.articles || [];
+    updateStats();
+    renderTable();
+  }
+
+  function updateStats() {
+    const pub   = allArticles.filter(a => a.published).length;
+    const draft = allArticles.filter(a => !a.published).length;
+    const dists = new Set(allArticles.map(a => a.district)).size;
+    document.getElementById('s-total').textContent = allArticles.length;
+    document.getElementById('s-pub').textContent   = pub;
+    document.getElementById('s-draft').textContent = draft;
+    document.getElementById('s-dist').textContent  = dists;
+  }
+
+  // ── RENDER TABLE ──────────────────────────────────────
+  function renderTable() {
+    const q       = document.getElementById('search').value.toLowerCase();
+    const fType   = document.getElementById('filter-type').value;
+    const fPub    = document.getElementById('filter-pub').value;
+    const tbody   = document.getElementById('articles-tbody');
+
+    let list = allArticles.filter(a => {
+      const matchQ   = !q || a.title_en.toLowerCase().includes(q) || (a.title_ml||'').includes(q);
+      const matchT   = !fType  || a.type === fType;
+      const matchP   = fPub === '' || String(a.published) === fPub;
+      return matchQ && matchT && matchP;
+    });
+
+    if (!list.length) {
+      tbody.innerHTML = `<tr><td colspan="7" class="no-results">No articles found.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = list.map(a => `
+      <tr>
+        <td style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)">#${a.id}</td>
+        <td class="td-title">
+          <strong>${a.title_en}</strong>
+          <span>${a.title_ml || '—'}</span>
+        </td>
+        <td><span class="badge badge-${a.type}">${a.type}</span></td>
+        <td class="td-district">${a.district}</td>
+        <td><span class="badge ${a.published ? 'badge-pub' : 'badge-draft'}">${a.published ? 'Live' : 'Draft'}</span></td>
+        <td class="td-date">${a.date || '—'}</td>
+        <td>
+          <div class="actions">
+            <button class="act-btn act-edit"   onclick="openModal(${a.id})">✏️ Edit</button>
+            <button class="act-btn act-toggle" onclick="togglePublish(${a.id})">${a.published ? '🙈 Unpublish' : '✅ Publish'}</button>
+            <button class="act-btn act-del"    onclick="openConfirm(${a.id})">🗑️ Delete</button>
+          </div>
+        </td>
+      </tr>`).join('');
+  }
+
+  // ── MODAL ─────────────────────────────────────────────
+  function openModal(id = null) {
+    editingId = id;
+    const modal = document.getElementById('modal-overlay');
+    modal.classList.remove('hide');
+    document.getElementById('modal-title').textContent = id ? '✏️ Edit Article' : '➕ Add New Article';
+
+    if (id) {
+      const a = allArticles.find(x => x.id === id);
+      document.getElementById('f-type').value      = a.type;
+      document.getElementById('f-district').value  = a.district;
+      document.getElementById('f-thumb').value     = a.thumb;
+      document.getElementById('f-date').value      = a.date;
+      document.getElementById('f-published').value = String(a.published);
+      document.getElementById('f-cat-en').value    = a.category_en   || '';
+      document.getElementById('f-src-en').value    = a.source_en     || '';
+      document.getElementById('f-title-en').value  = a.title_en      || '';
+      document.getElementById('f-exc-en').value    = a.excerpt_en    || '';
+      document.getElementById('f-meta-en').value   = a.meta_en       || '';
+      document.getElementById('f-cat-ml').value    = a.category_ml   || '';
+      document.getElementById('f-src-ml').value    = a.source_ml     || '';
+      document.getElementById('f-title-ml').value  = a.title_ml      || '';
+      document.getElementById('f-exc-ml').value    = a.excerpt_ml    || '';
+      document.getElementById('f-meta-ml').value   = a.meta_ml       || '';
+    } else {
+      document.getElementById('article-form').reset();
+      document.getElementById('f-date').value      = new Date().toISOString().split('T')[0];
+      document.getElementById('f-published').value = 'true';
+    }
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.add('hide');
+    editingId = null;
+  }
+
+  // ── SAVE ──────────────────────────────────────────────
+  async function saveArticle() {
+    const body = {
+      type:        document.getElementById('f-type').value,
+      district:    document.getElementById('f-district').value,
+      thumb:       document.getElementById('f-thumb').value,
+      date:        document.getElementById('f-date').value,
+      published:   document.getElementById('f-published').value === 'true',
+      category_en: document.getElementById('f-cat-en').value.trim(),
+      source_en:   document.getElementById('f-src-en').value.trim(),
+      title_en:    document.getElementById('f-title-en').value.trim(),
+      excerpt_en:  document.getElementById('f-exc-en').value.trim(),
+      meta_en:     document.getElementById('f-meta-en').value.trim(),
+      category_ml: document.getElementById('f-cat-ml').value.trim(),
+      source_ml:   document.getElementById('f-src-ml').value.trim(),
+      title_ml:    document.getElementById('f-title-ml').value.trim(),
+      excerpt_ml:  document.getElementById('f-exc-ml').value.trim(),
+      meta_ml:     document.getElementById('f-meta-ml').value.trim(),
+    };
+
+    if (!body.title_en || !body.category_en) {
+      showToast('❌ English title and category are required.', 'fail');
+      return;
+    }
+
+    const url    = editingId ? `/api/admin/articles/${editingId}` : '/api/admin/articles';
+    const method = editingId ? 'PUT' : 'POST';
+
+    const r = await fetch(url, {
+      method,
+      headers: {'Content-Type':'application/json','x-admin-token': token},
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+
+    if (d.success) {
+      showToast(editingId ? '✅ Article updated!' : '✅ Article added!', 'ok');
+      closeModal();
+      loadArticles();
+    } else {
+      showToast('❌ Error saving article.', 'fail');
+    }
+  }
+
+  // ── TOGGLE PUBLISH ────────────────────────────────────
+  async function togglePublish(id) {
+    const r = await fetch(`/api/admin/articles/${id}/toggle`, {
+      method: 'PATCH',
+      headers: {'x-admin-token': token}
+    });
+    const d = await r.json();
+    if (d.success) {
+      showToast(d.published ? '✅ Article published!' : '🙈 Article unpublished.', 'ok');
+      loadArticles();
+    }
+  }
+
+  // ── DELETE ────────────────────────────────────────────
+  function openConfirm(id) {
+    deletingId = id;
+    document.getElementById('confirm-overlay').classList.remove('hide');
+  }
+  function closeConfirm() {
+    deletingId = null;
+    document.getElementById('confirm-overlay').classList.add('hide');
+  }
+  async function confirmDelete() {
+    const r = await fetch(`/api/admin/articles/${deletingId}`, {
+      method: 'DELETE',
+      headers: {'x-admin-token': token}
+    });
+    const d = await r.json();
+    closeConfirm();
+    if (d.success) {
+      showToast('🗑️ Article deleted.', 'ok');
+      loadArticles();
+    } else {
+      showToast('❌ Error deleting.', 'fail');
+    }
+  }
+
+  // ── TOAST ─────────────────────────────────────────────
+  function showToast(msg, type='ok') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className   = `toast ${type} show`;
+    setTimeout(() => t.className = 'toast', 2800);
+  }
+
+  // Close modals on overlay click
+  document.getElementById('modal-overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  });
+  document.getElementById('confirm-overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('confirm-overlay')) closeConfirm();
+  });
+</script>
+</body>
+</html>

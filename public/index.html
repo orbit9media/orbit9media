@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Orbit9Media — Kerala's Independent Voice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=Noto+Sans+Malayalam:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--ink:#0d1a0d;--paper:#f0f7f0;--orbit:#1a6b3a;--orbit-bright:#22913e;--orbit-dim:#134f2b;--gold:#c8860a;--gold-light:#f5c842;--steel:#1e2e1e;--muted:#5a6b5a;--rule:#c5d9c5;--white:#fff;--kerala-bg:#e8f5e9}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--kerala-bg);color:var(--ink);font-size:16px;line-height:1.6;position:relative}
+    body::before{content:'';position:fixed;inset:0;z-index:-1;background-color:var(--kerala-bg);
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg opacity='0.07'%3E%3Cellipse cx='60' cy='30' rx='8' ry='20' fill='%231a6b3a' transform='rotate(-15 60 30)'/%3E%3Cellipse cx='40' cy='70' rx='6' ry='16' fill='%231a6b3a' transform='rotate(10 40 70)'/%3E%3Cellipse cx='85' cy='80' rx='7' ry='18' fill='%231a6b3a' transform='rotate(-8 85 80)'/%3E%3Ccircle cx='20' cy='45' r='4' fill='%23c8860a' opacity='0.5'/%3E%3Ccircle cx='95' cy='25' r='3' fill='%23c8860a' opacity='0.5'/%3E%3C/g%3E%3C/svg%3E"),
+      linear-gradient(160deg,#e8f5e9 0%,#f0fff0 40%,#e0f2e0 70%,#dff0df 100%);background-attachment:fixed}
+    a{text-decoration:none;color:inherit}
+    /* LOADING */
+    #loading{position:fixed;inset:0;background:var(--orbit);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+    #loading.hide{opacity:0;pointer-events:none}
+    .load-logo{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:#fff}
+    .load-logo span{color:var(--gold-light)}
+    .load-sub-text{font-family:'Space Mono',monospace;font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.15em;text-transform:uppercase;margin-top:8px}
+    .load-bar{width:200px;height:3px;background:rgba(255,255,255,.2);border-radius:2px;margin-top:20px;overflow:hidden}
+    .load-bar-inner{height:100%;background:var(--gold-light);border-radius:2px;animation:loadbar 1.2s ease forwards}
+    @keyframes loadbar{0%{width:0}100%{width:100%}}
+    /* LANG TOGGLE */
+    .lang-toggle{display:flex;align-items:center;background:rgba(26,107,58,.1);border:1.5px solid var(--orbit);border-radius:20px;padding:3px;cursor:pointer;flex-shrink:0}
+    .lang-opt{padding:5px 14px;border-radius:16px;font-size:11px;font-weight:700;letter-spacing:.05em;transition:all .2s;color:var(--muted);user-select:none}
+    .lang-opt.active{background:var(--orbit);color:#fff}
+    /* TICKER */
+    .ticker-bar{background:var(--orbit);color:#fff;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.07em;padding:7px 0;overflow:hidden;white-space:nowrap}
+    .ticker-inner{display:inline-block;animation:ticker 44s linear infinite}
+    .ticker-inner span{margin:0 44px}
+    .ticker-inner span::before{content:"◉ ";color:var(--gold-light)}
+    @keyframes ticker{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+    /* COUNTDOWN */
+    .countdown-banner{background:linear-gradient(90deg,var(--ink) 0%,#0d2e18 50%,#1a1a0a 100%);padding:14px 24px;display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap}
+    .cd-event{text-align:center}
+    .cd-event-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#fff;display:block}
+    .cd-event-sub{font-size:10px;color:rgba(255,255,255,.4);font-family:'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;margin-top:2px;display:block}
+    .cd-blocks{display:flex;gap:8px;align-items:center}
+    .cd-block{background:rgba(255,255,255,.07);border:1px solid rgba(200,134,10,.3);border-radius:4px;padding:8px 12px;text-align:center;min-width:62px}
+    .cd-num{font-family:'Space Mono',monospace;font-size:26px;font-weight:700;color:var(--gold-light);line-height:1;display:block}
+    .cd-unit{font-size:9px;color:rgba(255,255,255,.45);letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
+    .cd-sep{font-family:'Space Mono',monospace;font-size:20px;color:var(--gold);font-weight:700;padding-bottom:6px}
+    .cd-label{font-family:'Noto Sans Malayalam',sans-serif;font-size:13px;color:var(--gold-light);text-align:center}
+    .cd-label-head{display:block;font-size:10px;color:rgba(255,255,255,.45);font-family:'Space Mono',monospace;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
+    /* NAV */
+    nav{background:#fff;border-bottom:3px solid var(--orbit);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(26,107,58,.1)}
+    .nav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:64px;gap:16px}
+    .logo{display:flex;align-items:baseline;gap:1px;flex-shrink:0}
+    .logo-orbit{font-family:'Playfair Display',serif;font-weight:900;font-size:26px;color:var(--ink);letter-spacing:-.02em}
+    .logo-nine{font-family:'Space Mono',monospace;font-size:22px;color:var(--orbit);font-weight:700}
+    .logo-media{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-left:5px;align-self:center}
+    .logo-kerala{font-family:'Noto Sans Malayalam',sans-serif;font-size:10px;color:var(--gold);background:#fff8e1;border:1px solid var(--gold);border-radius:2px;padding:1px 6px;margin-left:8px;align-self:center}
+    .nav-links{display:flex;list-style:none;gap:20px;align-items:center}
+    .nav-links a{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--steel);transition:color .18s;white-space:nowrap}
+    .nav-links a:hover,.nav-links a.active{color:var(--orbit)}
+    .nav-cta{background:var(--orbit)!important;color:#fff!important;padding:8px 18px;border-radius:3px;font-weight:700!important}
+    .nav-cta:hover{background:var(--orbit-dim)!important}
+    /* DISTRICT TABS */
+    .district-tabs{background:#fff;border-bottom:1px solid var(--rule);overflow-x:auto;scrollbar-width:none}
+    .district-tabs::-webkit-scrollbar{display:none}
+    .district-tabs-inner{max-width:1280px;margin:0 auto;padding:0 24px;display:flex;white-space:nowrap}
+    .district-tab{padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .18s;flex-shrink:0}
+    .district-tab:hover,.district-tab.active{color:var(--orbit);border-bottom-color:var(--orbit)}
+    /* HERO */
+    .hero{max-width:1280px;margin:0 auto;padding:36px 24px 32px;display:grid;grid-template-columns:1fr 360px;gap:0 28px;border-bottom:1px solid var(--rule)}
+    .hero-main{position:relative}
+    .hero-img-placeholder{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#0d2e18 0%,#1a4a28 40%,#0d3a20 70%,rgba(200,134,10,.15) 100%);position:relative;overflow:hidden;display:flex;align-items:flex-end}
+    .hero-img-placeholder::before{content:'';position:absolute;bottom:0;left:0;right:0;height:45%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 180' preserveAspectRatio='none'%3E%3Cpath d='M0 180 L0 120 Q50 100 80 110 Q120 125 160 100 Q200 75 240 90 Q280 105 320 85 Q360 65 400 80 Q440 95 480 75 Q520 55 560 70 Q600 85 640 65 Q680 45 720 60 Q760 75 800 55 L800 180Z' fill='%230d2e18' opacity='0.5'/%3E%3Cpath d='M0 180 L0 145 Q80 130 120 140 Q200 155 280 130 Q360 105 440 125 Q520 145 600 120 Q680 95 800 115 L800 180Z' fill='%230a1f10' opacity='0.6'/%3E%3C/svg%3E") no-repeat bottom/cover}
+    .hero-img-text{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(13,26,13,.92),transparent);padding:40px 24px 24px}
+    .eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-light);margin-bottom:8px;display:block}
+    .hero-title{font-family:'Playfair Display',serif;font-size:clamp(18px,2.4vw,32px);font-weight:700;color:#fff;line-height:1.2;margin-bottom:10px}
+    .ml .hero-title{font-family:'Noto Sans Malayalam',sans-serif;font-size:clamp(16px,2vw,26px)}
+    .hero-byline{font-size:12px;color:rgba(255,255,255,.6);font-family:'Space Mono',monospace}
+    .hero-side{display:flex;flex-direction:column}
+    .side-card{padding:16px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+    .side-card:first-child{padding-top:0}
+    .side-card:last-child{border-bottom:none}
+    .side-card .eyebrow{color:var(--muted)}
+    .side-card h3{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;line-height:1.3;margin-bottom:5px;transition:color .16s}
+    .ml .side-card h3{font-family:'Noto Sans Malayalam',sans-serif;font-size:13px}
+    .side-card:hover h3{color:var(--orbit)}
+    .side-card p{font-size:12px;color:var(--muted);line-height:1.5}
+    .ml .side-card p{font-family:'Noto Sans Malayalam',sans-serif}
+    /* SECTION LABEL */
+    .section-label{max-width:1280px;margin:0 auto;padding:28px 24px 14px;display:flex;align-items:center;gap:14px}
+    .section-label h2{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+    .ml .section-label h2{font-family:'Noto Sans Malayalam',sans-serif;text-transform:none;letter-spacing:0;font-size:13px}
+    .section-label::after{content:'';flex:1;height:1px;background:var(--rule)}
+    /* CARDS */
+    .card-grid{max-width:1280px;margin:0 auto;padding:0 24px 36px;display:grid;grid-template-columns:repeat(4,1fr);gap:22px;border-bottom:1px solid var(--rule)}
+    .card{cursor:pointer}
+    .card-thumb{width:100%;aspect-ratio:16/9;margin-bottom:11px;overflow:hidden;border-radius:2px}
+    .card-thumb-inner{width:100%;height:100%;transition:transform .3s}
+    .card:hover .card-thumb-inner{transform:scale(1.05)}
+    .ct1{background:linear-gradient(135deg,#0d2e18,#1a5230)}.ct2{background:linear-gradient(135deg,#1a2e10,#3a5a1a)}.ct3{background:linear-gradient(135deg,#0d1a2e,#1a3a5a)}.ct4{background:linear-gradient(135deg,#2e1a0d,#6b3a10)}.ct5{background:linear-gradient(135deg,#1a2e2e,#1a5a5a)}.ct6{background:linear-gradient(135deg,#2e2e0d,#5a5a10)}.ct7{background:linear-gradient(135deg,#2e0d1a,#5a1a3a)}.ct8{background:linear-gradient(135deg,#0d2e2e,#0d5a40)}
+    .card-source{font-size:9px;color:var(--gold);font-family:'Space Mono',monospace;letter-spacing:.06em;display:block;margin-bottom:3px}
+    .card h4{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;line-height:1.35;margin-bottom:6px;transition:color .16s}
+    .ml .card h4{font-family:'Noto Sans Malayalam',sans-serif;font-size:13px}
+    .card:hover h4{color:var(--orbit)}
+    .card-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)}
+    /* SIGNAL */
+    .kerala-signal{background:linear-gradient(90deg,var(--orbit),var(--orbit-dim));padding:36px 24px}
+    .kerala-signal-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:36px;flex-wrap:wrap}
+    .signal-brand{flex-shrink:0;max-width:220px}
+    .signal-brand h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:6px}
+    .ml .signal-brand h2{font-family:'Noto Sans Malayalam',sans-serif;font-size:17px}
+    .signal-brand p,.ml .signal-brand p{font-size:12px;color:rgba(255,255,255,.65)}
+    .ml .signal-brand p{font-family:'Noto Sans Malayalam',sans-serif}
+    .signal-divider{width:1px;height:56px;background:rgba(255,255,255,.25);flex-shrink:0}
+    .signal-facts{display:flex;gap:32px;flex:1;flex-wrap:wrap}
+    .signal-fact{text-align:center}
+    .signal-num{font-family:'Space Mono',monospace;font-size:clamp(22px,3vw,36px);font-weight:700;color:var(--gold-light);display:block;line-height:1}
+    .signal-label{font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+    .ml .signal-label{font-family:'Noto Sans Malayalam',sans-serif;text-transform:none;letter-spacing:0;font-size:11px}
+    /* LONG FORM */
+    .lf-grid{max-width:1280px;margin:0 auto;padding:0 24px 44px;display:grid;grid-template-columns:2fr 1fr;gap:36px}
+    .lf-main-card{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+    .lf-thumb{aspect-ratio:4/3;background:linear-gradient(135deg,#0d2e18,#1a5a2e);position:relative;overflow:hidden;border-radius:2px}
+    .lf-thumb::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 14px,rgba(200,134,10,.08) 14px,rgba(200,134,10,.08) 15px)}
+    .lf-text h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;line-height:1.25;margin-bottom:10px;transition:color .16s}
+    .ml .lf-text h3{font-family:'Noto Sans Malayalam',sans-serif;font-size:15px}
+    .lf-text:hover h3{color:var(--orbit)}
+    .lf-text p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:12px}
+    .ml .lf-text p{font-family:'Noto Sans Malayalam',sans-serif}
+    .read-more{font-family:'Space Mono',monospace;font-size:11px;color:var(--orbit);letter-spacing:.08em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+    .read-more::after{content:'→'}
+    .ml .read-more{font-family:'Noto Sans Malayalam',sans-serif;text-transform:none;letter-spacing:0;font-size:12px}
+    .lf-sidebar{border-left:1px solid var(--rule);padding-left:28px}
+    .lf-sidebar-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
+    .ml .lf-sidebar-title{font-family:'Noto Sans Malayalam',sans-serif;text-transform:none;letter-spacing:0;font-size:12px}
+    .mini-article{padding:14px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+    .mini-article:last-child{border-bottom:none}
+    .mini-article h4{font-family:'Playfair Display',serif;font-size:13px;line-height:1.35;margin-bottom:4px;transition:color .16s}
+    .ml .mini-article h4{font-family:'Noto Sans Malayalam',sans-serif;font-size:12px}
+    .mini-article:hover h4{color:var(--orbit)}
+    .mini-article span{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace}
+    /* SUBSCRIBE */
+    .sub-banner{background:var(--ink);padding:52px 24px;text-align:center}
+    .sub-banner-inner{max-width:580px;margin:0 auto}
+    .sub-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-light);margin-bottom:16px;display:block}
+    .ml .sub-tag{font-family:'Noto Sans Malayalam',sans-serif;text-transform:none;letter-spacing:0;font-size:12px}
+    .sub-banner h2{font-family:'Playfair Display',serif;font-size:clamp(22px,3vw,36px);font-weight:900;color:#fff;line-height:1.15;margin-bottom:14px}
+    .ml .sub-banner h2{font-family:'Noto Sans Malayalam',sans-serif;font-size:clamp(18px,2.4vw,28px)}
+    .sub-banner p{color:rgba(255,255,255,.5);font-size:13px;margin-bottom:26px;line-height:1.7}
+    .ml .sub-banner p{font-family:'Noto Sans Malayalam',sans-serif}
+    .sub-plans{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .plan-btn{padding:12px 24px;border-radius:3px;font-weight:700;font-size:13px;cursor:pointer;border:none;transition:all .2s}
+    .ml .plan-btn{font-family:'Noto Sans Malayalam',sans-serif}
+    .plan-primary{background:var(--orbit-bright);color:#fff}.plan-primary:hover{background:var(--orbit-dim)}
+    .plan-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3)}.plan-ghost:hover{border-color:#fff}
+    /* PODCASTS */
+    .podcast-row{background:var(--steel);padding:44px 0}
+    .podcast-inner{max-width:1280px;margin:0 auto;padding:0 24px}
+    .podcast-inner .section-label{padding:0 0 18px;max-width:unset;margin:0}
+    .podcast-inner .section-label h2{color:rgba(255,255,255,.4)}
+    .podcast-inner .section-label::after{background:rgba(255,255,255,.1)}
+    .pod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .pod-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);padding:18px;display:flex;gap:14px;cursor:pointer;transition:background .2s;border-radius:2px}
+    .pod-card:hover{background:rgba(26,107,58,.18);border-color:rgba(26,107,58,.4)}
+    .pod-icon{width:52px;height:52px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+    .pi1{background:linear-gradient(135deg,#1a6b3a,#22913e)}.pi2{background:linear-gradient(135deg,#c8860a,#f5c842)}.pi3{background:linear-gradient(135deg,#1a3a6b,#2255aa)}
+    .pod-info h4{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;line-height:1.3}
+    .ml .pod-info h4{font-family:'Noto Sans Malayalam',sans-serif;font-size:12px}
+    .pod-info p{font-size:11px;color:rgba(255,255,255,.45);line-height:1.5}
+    .ml .pod-info p{font-family:'Noto Sans Malayalam',sans-serif}
+    .ep-count{font-family:'Space Mono',monospace;font-size:10px;color:var(--gold-light);margin-top:6px;display:block}
+    /* NEWSLETTER */
+    .newsletter{max-width:1280px;margin:0 auto;padding:44px 24px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;border-bottom:1px solid var(--rule)}
+    .newsletter-copy h2{font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,26px);font-weight:700;line-height:1.2;margin-bottom:10px}
+    .ml .newsletter-copy h2{font-family:'Noto Sans Malayalam',sans-serif;font-size:clamp(15px,1.8vw,22px)}
+    .newsletter-copy p{font-size:13px;color:var(--muted);line-height:1.7}
+    .ml .newsletter-copy p{font-family:'Noto Sans Malayalam',sans-serif}
+    .nl-form{display:flex}
+    .nl-input{flex:1;padding:13px 16px;border:2px solid var(--orbit);border-right:none;background:#fff;font-size:13px;outline:none}
+    .nl-btn{background:var(--orbit);color:#fff;border:2px solid var(--orbit);padding:13px 20px;font-weight:700;font-size:12px;cursor:pointer;transition:all .2s;white-space:nowrap}
+    .ml .nl-btn{font-family:'Noto Sans Malayalam',sans-serif}
+    .nl-btn:hover{background:var(--orbit-dim);border-color:var(--orbit-dim)}
+    /* FOOTER */
+    footer{background:var(--ink);padding:44px 24px 22px}
+    .footer-inner{max-width:1280px;margin:0 auto}
+    .footer-top{display:grid;grid-template-columns:240px 1fr 1fr 1fr;gap:36px;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:24px}
+    .footer-brand .logo-orbit{color:#fff;font-size:20px}.footer-brand .logo-nine{font-size:18px}
+    .footer-brand p{font-size:12px;color:rgba(255,255,255,.38);margin-top:10px;line-height:1.65}
+    .ml .footer-brand p{font-family:'Noto Sans Malayalam',sans-serif}
+    .kerala-badge{display:inline-block;margin-top:10px;background:rgba(26,107,58,.3);border:1px solid rgba(26,107,58,.5);border-radius:3px;padding:3px 9px;font-size:11px;color:rgba(255,255,255,.65);font-family:'Noto Sans Malayalam',sans-serif}
+    .footer-col h4{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:14px}
+    .ml .footer-col h4{font-family:'Noto Sans Malayalam',sans-serif;text-transform:none;letter-spacing:0;font-size:12px}
+    .footer-col ul{list-style:none}
+    .footer-col li{margin-bottom:9px}
+    .footer-col a{font-size:12px;color:rgba(255,255,255,.6);transition:color .16s}
+    .ml .footer-col a{font-family:'Noto Sans Malayalam',sans-serif}
+    .footer-col a:hover{color:var(--gold-light)}
+    .socials{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .social-dot{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(255,255,255,.55);cursor:pointer;transition:all .2s}
+    .social-dot:hover{background:var(--orbit);border-color:var(--orbit);color:#fff}
+    .footer-bottom{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:rgba(255,255,255,.25);font-family:'Space Mono',monospace;flex-wrap:wrap;gap:8px}
+    .ml .footer-bottom span{font-family:'Noto Sans Malayalam',sans-serif;letter-spacing:0;font-size:11px}
+    /* RESPONSIVE */
+    @media(max-width:960px){.hero{grid-template-columns:1fr}.hero-side{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.card-grid{grid-template-columns:1fr 1fr}.lf-grid{grid-template-columns:1fr}.lf-sidebar{border-left:none;padding-left:0;border-top:1px solid var(--rule);padding-top:20px}.pod-grid{grid-template-columns:1fr}.newsletter{grid-template-columns:1fr;gap:28px}.footer-top{grid-template-columns:1fr 1fr}.nav-links{display:none}}
+    @media(max-width:560px){.card-grid{grid-template-columns:1fr}.hero-side{grid-template-columns:1fr}.lf-main-card{grid-template-columns:1fr}.kerala-signal-inner{flex-direction:column;gap:20px}.footer-top{grid-template-columns:1fr}.cd-num{font-size:20px}.cd-block{min-width:50px;padding:6px 10px}.countdown-banner{gap:16px}}
+  </style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="load-logo">Orbit<span>9</span></div>
+  <div class="load-sub-text">Loading Kerala's News...</div>
+  <div class="load-bar"><div class="load-bar-inner"></div></div>
+</div>
+
+<div class="ticker-bar"><div class="ticker-inner" id="ticker-inner"></div></div>
+
+<div class="countdown-banner">
+  <div class="cd-event">
+    <span class="cd-event-title" id="cd-title">Orbit9Media Grand Launch</span>
+    <span class="cd-event-sub" id="cd-sub">Counting down to · 17 August 2026</span>
+  </div>
+  <div class="cd-blocks">
+    <div class="cd-block"><span class="cd-num" id="cd-days">00</span><div class="cd-unit" id="cd-u-d">Days</div></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-block"><span class="cd-num" id="cd-hours">00</span><div class="cd-unit" id="cd-u-h">Hours</div></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-block"><span class="cd-num" id="cd-mins">00</span><div class="cd-unit" id="cd-u-m">Mins</div></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-block"><span class="cd-num" id="cd-secs">00</span><div class="cd-unit" id="cd-u-s">Secs</div></div>
+  </div>
+  <div class="cd-label">
+    <span class="cd-label-head" id="cd-lh">Event Date</span>
+    <span id="cd-ld">17 August 2026</span>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <span class="logo-orbit">Orbit</span><span class="logo-nine">9</span>
+      <span class="logo-media">Media</span>
+      <span class="logo-kerala">കേരളം</span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#" class="active" id="nv-video">Video</a></li>
+      <li><a href="#" id="nv-podcast">Podcast</a></li>
+      <li><a href="#" id="nv-long">Long Form</a></li>
+      <li><a href="#" id="nv-analysis">Analysis</a></li>
+      <li><a href="#" id="nv-lang" onclick="toggleLang(event)">മലയാളം</a></li>
+      <li><a href="#" class="nav-cta" id="nv-sub">Subscribe</a></li>
+    </ul>
+    <div class="lang-toggle" onclick="toggleLang(event)">
+      <span class="lang-opt active" id="lt-en">EN</span>
+      <span class="lang-opt" id="lt-ml">ML</span>
+    </div>
+  </div>
+</nav>
+
+<div class="district-tabs"><div class="district-tabs-inner" id="dist-tabs"></div></div>
+
+<section class="hero" id="hero-sec">
+  <div class="hero-main">
+    <div class="hero-img-placeholder">
+      <div class="hero-img-text">
+        <span class="eyebrow" id="h-cat"></span>
+        <h1 class="hero-title" id="h-title"></h1>
+        <p class="hero-byline" id="h-byline"></p>
+      </div>
+    </div>
+  </div>
+  <aside class="hero-side" id="h-side"></aside>
+</section>
+
+<div class="section-label"><h2 id="sl-latest">Latest Kerala News</h2></div>
+<section class="card-grid" id="grid-latest"></section>
+
+<div class="kerala-signal">
+  <div class="kerala-signal-inner">
+    <div class="signal-brand"><h2 id="sig-title"></h2><p id="sig-sub"></p></div>
+    <div class="signal-divider"></div>
+    <div class="signal-facts" id="sig-facts"></div>
+  </div>
+</div>
+
+<div class="section-label"><h2 id="sl-lf">Long Form · In Depth</h2></div>
+<section class="lf-grid">
+  <div class="lf-main-card">
+    <div class="lf-thumb"></div>
+    <div class="lf-text" id="lf-main"></div>
+  </div>
+  <aside class="lf-sidebar">
+    <div class="lf-sidebar-title" id="sl-also">Also in Long Form</div>
+    <div id="lf-side"></div>
+  </aside>
+</section>
+
+<div class="sub-banner">
+  <div class="sub-banner-inner">
+    <span class="sub-tag" id="sub-tag"></span>
+    <h2 id="sub-h"></h2>
+    <p id="sub-p"></p>
+    <div class="sub-plans">
+      <button class="plan-btn plan-primary" id="sub-b1"></button>
+      <button class="plan-btn plan-ghost" id="sub-b2"></button>
+    </div>
+  </div>
+</div>
+
+<div class="podcast-row">
+  <div class="podcast-inner">
+    <div class="section-label"><h2 id="sl-pod" style="color:rgba(255,255,255,.4)">Podcasts</h2></div>
+    <div class="pod-grid" id="pod-grid"></div>
+  </div>
+</div>
+
+<div class="section-label"><h2 id="sl-more">More Kerala Stories</h2></div>
+<section class="card-grid" id="grid-more"></section>
+
+<section class="newsletter">
+  <div class="newsletter-copy"><h2 id="nl-h"></h2><p id="nl-p"></p></div>
+  <div>
+    <div class="nl-form">
+      <input class="nl-input" type="email" id="nl-inp" placeholder="your@email.com"/>
+      <button class="nl-btn" id="nl-btn">Subscribe Free</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo"><span class="logo-orbit">Orbit</span><span class="logo-nine">9</span></div>
+        <div class="kerala-badge" id="ft-badge"></div>
+        <p id="ft-tag"></p>
+        <div class="socials">
+          <div class="social-dot">𝕏</div><div class="social-dot">in</div>
+          <div class="social-dot">▶</div><div class="social-dot">📷</div><div class="social-dot">✈</div>
+        </div>
+      </div>
+      <div class="footer-col" id="fc1"></div>
+      <div class="footer-col" id="fc2"></div>
+      <div class="footer-col" id="fc3"></div>
+    </div>
+    <div class="footer-bottom">
+      <span id="ft-copy"></span><span id="ft-tag2"></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  let lang = 'en';
+
+  // Countdown
+  function tick() {
+    const diff = new Date('2026-08-17T00:00:00') - new Date();
+    if (diff <= 0) return;
+    const pad = n => String(Math.floor(n)).padStart(2,'0');
+    document.getElementById('cd-days').textContent  = pad(diff/86400000);
+    document.getElementById('cd-hours').textContent = pad((diff%86400000)/3600000);
+    document.getElementById('cd-mins').textContent  = pad((diff%3600000)/60000);
+    document.getElementById('cd-secs').textContent  = pad((diff%60000)/1000);
+  }
+  tick(); setInterval(tick, 1000);
+
+  // District tabs
+  function setTab(el) {
+    document.querySelectorAll('.district-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Card grid renderer
+  function cards(items) {
+    return items.map(a => `
+      <article class="card">
+        <div class="card-thumb"><div class="card-thumb-inner ${a.thumb}"></div></div>
+        <span class="card-source">${a.source||''}</span>
+        <span class="eyebrow" style="color:var(--orbit)">${a.category}</span>
+        <h4>${a.title}</h4>
+        <p class="card-meta">${a.meta||''}</p>
+      </article>`).join('');
+  }
+
+  // Footer col renderer
+  function footerCol(el, head, links) {
+    el.innerHTML = `<h4>${head}</h4><ul>${links.map(l=>`<li><a href="#">${l}</a></li>`).join('')}</ul>`;
+  }
+
+  async function render() {
+    const res = await fetch(`/api/news?lang=${lang}`);
+    const d = await res.json();
+    const u = d.ui;
+    const ml = lang === 'ml';
+
+    // Apply ml class to body for CSS cascade
+    document.body.className = ml ? 'ml' : '';
+    document.getElementById('html-root').lang = lang;
+
+    // Ticker
+    const spans = d.ticker.map(t=>`<span>${t}</span>`).join('');
+    document.getElementById('ticker-inner').innerHTML = spans + spans;
+
+    // Countdown labels
+    const c = u.countdown;
+    document.getElementById('cd-title').textContent = c.title;
+    document.getElementById('cd-sub').textContent   = c.sub;
+    document.getElementById('cd-lh').textContent    = c.label;
+    document.getElementById('cd-ld').textContent    = c.date;
+    document.getElementById('cd-u-d').textContent   = c.days;
+    document.getElementById('cd-u-h').textContent   = c.hours;
+    document.getElementById('cd-u-m').textContent   = c.mins;
+    document.getElementById('cd-u-s').textContent   = c.secs;
+
+    // Nav
+    document.getElementById('nv-video').textContent    = u.nav.video;
+    document.getElementById('nv-podcast').textContent  = u.nav.podcast;
+    document.getElementById('nv-long').textContent     = u.nav.longform;
+    document.getElementById('nv-analysis').textContent = u.nav.analysis;
+    document.getElementById('nv-lang').textContent     = u.nav.lang;
+    document.getElementById('nv-sub').textContent      = u.nav.subscribe;
+    document.getElementById('lt-en').classList.toggle('active', !ml);
+    document.getElementById('lt-ml').classList.toggle('active', ml);
+
+    // District tabs
+    const all = `<div class="district-tab active" onclick="setTab(this)">${u.districtAll}</div>`;
+    const dts = u.districts.map(d=>`<div class="district-tab" onclick="setTab(this)">${d}</div>`).join('');
+    document.getElementById('dist-tabs').innerHTML = all + dts;
+
+    // Hero
+    const hero = d.articles.find(a=>a.type==='hero');
+    if (hero) {
+      document.getElementById('h-cat').textContent    = hero.category;
+      document.getElementById('h-title').textContent  = hero.title;
+      document.getElementById('h-byline').textContent = hero.byline;
+    }
+    document.getElementById('h-side').innerHTML = d.articles.filter(a=>a.type==='sidebar').map(a=>`
+      <div class="side-card">
+        <span class="eyebrow">${a.category}</span>
+        <h3>${a.title}</h3>
+        <p>${a.excerpt||''}</p>
+      </div>`).join('');
+
+    // Section labels
+    document.getElementById('sl-latest').textContent = u.sectionLabels.latest;
+    document.getElementById('sl-lf').textContent     = u.sectionLabels.longform;
+    document.getElementById('sl-pod').textContent    = u.sectionLabels.podcasts;
+    document.getElementById('sl-more').textContent   = u.sectionLabels.more;
+    document.getElementById('sl-also').textContent   = u.sectionLabels.alsoIn;
+
+    // Grids
+    document.getElementById('grid-latest').innerHTML = cards(d.articles.filter(a=>a.type==='latest'));
+    document.getElementById('grid-more').innerHTML   = cards(d.articles.filter(a=>a.type==='more'));
+
+    // Signal
+    const s = u.signal;
+    document.getElementById('sig-title').textContent = s.title;
+    document.getElementById('sig-sub').textContent   = s.sub;
+    document.getElementById('sig-facts').innerHTML = [
+      {n:s.f1n,l:s.f1l},{n:s.f2n,l:s.f2l},{n:s.f3n,l:s.f3l},{n:s.f4n,l:s.f4l}
+    ].map(f=>`<div class="signal-fact"><span class="signal-num">${f.n}</span><div class="signal-label">${f.l}</div></div>`).join('');
+
+    // Long form
+    const lf = d.longform;
+    document.getElementById('lf-main').innerHTML = `
+      <span class="eyebrow">${lf.main.category}</span>
+      <h3>${lf.main.title}</h3>
+      <p>${lf.main.excerpt}</p>
+      <span class="read-more">${lf.main.readMore}</span>`;
+    document.getElementById('lf-side').innerHTML = lf.sidebar.map(a=>`
+      <div class="mini-article"><h4>${a.title}</h4><span>${a.date}</span></div>`).join('');
+
+    // Subscribe
+    const sub = u.subscribe;
+    document.getElementById('sub-tag').textContent = sub.tag;
+    document.getElementById('sub-h').textContent   = sub.title;
+    document.getElementById('sub-p').textContent   = sub.body;
+    document.getElementById('sub-b1').textContent  = sub.btn1;
+    document.getElementById('sub-b2').textContent  = sub.btn2;
+
+    // Podcasts
+    document.getElementById('pod-grid').innerHTML = d.podcasts.map(p=>`
+      <div class="pod-card">
+        <div class="pod-icon ${p.iconClass}">${p.icon}</div>
+        <div class="pod-info">
+          <h4>${p.title}</h4>
+          <p>${p.desc}</p>
+          <span class="ep-count">${p.ep}</span>
+        </div>
+      </div>`).join('');
+
+    // Newsletter
+    const nl = u.newsletter;
+    document.getElementById('nl-h').textContent   = nl.title;
+    document.getElementById('nl-p').textContent   = nl.body;
+    document.getElementById('nl-inp').placeholder = nl.placeholder;
+    document.getElementById('nl-btn').textContent = nl.btn;
+
+    // Footer
+    const ft = u.footer;
+    document.getElementById('ft-badge').textContent = ft.keralaBadge;
+    document.getElementById('ft-tag').textContent   = ft.tagline;
+    footerCol(document.getElementById('fc1'), ft.col1.head, ft.col1.links);
+    footerCol(document.getElementById('fc2'), ft.col2.head, ft.col2.links);
+    footerCol(document.getElementById('fc3'), ft.col3.head, ft.col3.links);
+    document.getElementById('ft-copy').textContent  = ft.copy;
+    document.getElementById('ft-tag2').textContent  = ft.tagline2;
+  }
+
+  function toggleLang(e) {
+    if (e) e.preventDefault();
+    lang = lang === 'en' ? 'ml' : 'en';
+    render();
+  }
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    await render();
+    setTimeout(() => document.getElementById('loading').classList.add('hide'), 1400);
+  });
+</script>
+</body>
+</html>
