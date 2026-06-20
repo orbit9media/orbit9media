@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Orbit9Media — Kerala's Independent Voice</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=Noto+Sans+Malayalam:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#0d1a0d;--orbit:#1a6b3a;--orbit-b:#22913e;--orbit-d:#134f2b;--gold:#c8860a;--glow:#f5c842;--steel:#1e2e1e;--muted:#5a6b5a;--rule:#c5d9c5;--bg:#e8f5e9}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;z-index:-1;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg opacity='0.06'%3E%3Cellipse cx='60' cy='30' rx='8' ry='20' fill='%231a6b3a' transform='rotate(-15 60 30)'/%3E%3Cellipse cx='40' cy='70' rx='6' ry='16' fill='%231a6b3a' transform='rotate(10 40 70)'/%3E%3C/g%3E%3C/svg%3E"),
+  linear-gradient(160deg,#e8f5e9,#f0fff0 40%,#e0f2e0);background-attachment:fixed}
+a{text-decoration:none;color:inherit}
+
+/* LOADING */
+#loading{position:fixed;inset:0;background:var(--orbit);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+#loading.hide{opacity:0;pointer-events:none}
+.ld-logo{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:#fff}
+.ld-logo b{color:var(--glow)}
+.ld-txt{font-family:'Space Mono',monospace;font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.15em;margin-top:10px;text-transform:uppercase}
+.ld-bar{width:200px;height:3px;background:rgba(255,255,255,.2);border-radius:2px;margin-top:18px;overflow:hidden}
+.ld-fill{height:100%;background:var(--glow);border-radius:2px;animation:ldfill 1.4s ease forwards}
+@keyframes ldfill{0%{width:0}100%{width:100%}}
+
+/* TICKER */
+.ticker{background:var(--orbit);color:#fff;font-family:'Space Mono',monospace;font-size:11px;padding:7px 0;overflow:hidden;white-space:nowrap}
+.ticker-t{display:inline-block;animation:tick 44s linear infinite}
+.ticker-t span{margin:0 44px}
+.ticker-t span::before{content:"◉ ";color:var(--glow)}
+@keyframes tick{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+
+/* COUNTDOWN */
+.cd-bar{background:linear-gradient(90deg,#0d1a0d,#0d2e18,#1a1a0a);padding:14px 20px;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap}
+.cd-label{text-align:center}
+.cd-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#fff;display:block}
+.cd-sub{font-size:10px;color:rgba(255,255,255,.4);font-family:'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
+.cd-blocks{display:flex;gap:8px;align-items:center}
+.cd-box{background:rgba(255,255,255,.07);border:1px solid rgba(200,134,10,.3);border-radius:4px;padding:8px 12px;text-align:center;min-width:60px}
+.cd-n{font-family:'Space Mono',monospace;font-size:26px;font-weight:700;color:var(--glow);display:block;line-height:1}
+.cd-u{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+.cd-sep{font-family:'Space Mono',monospace;font-size:20px;color:var(--gold);font-weight:700;padding-bottom:6px}
+.cd-date{font-family:'Noto Sans Malayalam',sans-serif;font-size:13px;color:var(--glow);text-align:center}
+.cd-date small{display:block;font-size:10px;font-family:'Space Mono',monospace;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
+
+/* NAV */
+nav{background:#fff;border-bottom:3px solid var(--orbit);position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(26,107,58,.1)}
+.nav-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:62px;gap:12px}
+.logo{display:flex;align-items:baseline;gap:1px;flex-shrink:0}
+.lo{font-family:'Playfair Display',serif;font-weight:900;font-size:26px;color:var(--ink);letter-spacing:-.02em}
+.l9{font-family:'Space Mono',monospace;font-size:22px;color:var(--orbit);font-weight:700}
+.lm{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.2em;margin-left:5px;align-self:center;text-transform:uppercase}
+.lk{font-family:'Noto Sans Malayalam',sans-serif;font-size:10px;color:var(--gold);background:#fff8e1;border:1px solid var(--gold);border-radius:2px;padding:1px 6px;margin-left:8px;align-self:center}
+.nav-links{display:flex;list-style:none;gap:18px;align-items:center}
+.nav-links a{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--steel);transition:color .15s}
+.nav-links a:hover,.nav-links a.act{color:var(--orbit)}
+.nav-sub{background:var(--orbit)!important;color:#fff!important;padding:7px 16px;border-radius:3px;font-weight:700!important}
+.nav-sub:hover{background:var(--orbit-d)!important}
+.lang-btn{display:flex;background:rgba(26,107,58,.1);border:1.5px solid var(--orbit);border-radius:20px;padding:3px;cursor:pointer;flex-shrink:0}
+.lo-opt{padding:4px 12px;border-radius:14px;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--muted);user-select:none;transition:all .2s}
+.lo-opt.on{background:var(--orbit);color:#fff}
+
+/* DISTRICT TABS */
+.dtabs{background:#fff;border-bottom:1px solid var(--rule);overflow-x:auto;scrollbar-width:none}
+.dtabs::-webkit-scrollbar{display:none}
+.dtabs-in{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;white-space:nowrap}
+.dtab{padding:10px 14px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;flex-shrink:0}
+.dtab:hover,.dtab.on{color:var(--orbit);border-bottom-color:var(--orbit)}
+
+/* HERO */
+.hero{max-width:1280px;margin:0 auto;padding:32px 20px;display:grid;grid-template-columns:1fr 340px;gap:0 24px;border-bottom:1px solid var(--rule)}
+.hero-img{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#0d2e18,#1a4a28,#0d3a20);position:relative;overflow:hidden;display:flex;align-items:flex-end}
+.hero-img::before{content:'';position:absolute;bottom:0;left:0;right:0;height:45%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 180' preserveAspectRatio='none'%3E%3Cpath d='M0 180 L0 120 Q80 100 160 110 Q280 125 360 90 Q440 60 520 80 Q640 100 800 60 L800 180Z' fill='%230d2e18' opacity='0.6'/%3E%3C/svg%3E") no-repeat bottom/cover}
+.hero-txt{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(13,26,13,.92),transparent);padding:36px 20px 20px}
+.eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--glow);margin-bottom:7px;display:block}
+.hero-h{font-family:'Playfair Display',serif;font-size:clamp(17px,2.2vw,30px);font-weight:700;color:#fff;line-height:1.2;margin-bottom:8px}
+.ml .hero-h{font-family:'Noto Sans Malayalam',sans-serif;font-size:clamp(15px,1.9vw,24px)}
+.hero-by{font-size:11px;color:rgba(255,255,255,.55);font-family:'Space Mono',monospace}
+.hero-side{display:flex;flex-direction:column}
+.sc{padding:14px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+.sc:first-child{padding-top:0}
+.sc:last-child{border-bottom:none}
+.sc .eyebrow{color:var(--muted)}
+.sc h3{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;line-height:1.3;margin-bottom:4px;transition:color .15s}
+.ml .sc h3{font-family:'Noto Sans Malayalam',sans-serif;font-size:12px}
+.sc:hover h3{color:var(--orbit)}
+.sc p{font-size:11.5px;color:var(--muted);line-height:1.5}
+.ml .sc p{font-family:'Noto Sans Malayalam',sans-serif}
+
+/* SECTION LABEL */
+.sl{max-width:1280px;margin:0 auto;padding:24px 20px 12px;display:flex;align-items:center;gap:12px}
+.sl h2{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.ml .sl h2{font-family:'Noto Sans Malayalam',sans-serif;text-transform:none;letter-spacing:0;font-size:13px}
+.sl::after{content:'';flex:1;height:1px;background:var(--rule)}
+
+/* CARDS */
+.grid{max-width:1280px;margin:0 auto;padding:0 20px 32px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;border-bottom:1px solid var(--rule)}
+.card{cursor:pointer}
+.card-img{width:100%;aspect-ratio:16/9;margin-bottom:10px;overflow:hidden;border-radius:2px}
+.card-img div{width:100%;height:100%;transition:transform .3s}
+.card:hover .card-img div{transform:scale(1.05)}
+.ct1{background:linear-gradient(135deg,#0d2e18,#1a5230)}.ct2{background:linear-gradient(135deg,#1a2e10,#3a5a1a)}
+.ct3{background:linear-gradient(135deg,#0d1a2e,#1a3a5a)}.ct4{background:linear-gradient(135deg,#2e1a0d,#6b3a10)}
+.ct5{background:linear-gradient(135deg,#1a2e2e,#1a5a5a)}.ct6{background:linear-gradient(135deg,#2e2e0d,#5a5a10)}
+.ct7{background:linear-gradient(135deg,#2e0d1a,#5a1a3a)}.ct8{background:linear-gradient(135deg,#0d2e2e,#0d5a40)}
+.csrc{font-size:9px;color:var(--gold);font-family:'Space Mono',monospace;display:block;margin-bottom:2px}
+.card h4{font-family:'Playfair Display',serif;font-size:13.5px;font-weight:700;line-height:1.35;margin-bottom:5px;transition:color .15s}
+.ml .card h4{font-family:'Noto Sans Malayalam',sans-serif;font-size:12px}
+.card:hover h4{color:var(--orbit)}
+.cmeta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)}
+
+/* SIGNAL */
+.sig{background:linear-gradient(90deg,var(--orbit),var(--orbit-d));padding:32px 20px}
+.sig-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:32px;flex-wrap:wrap}
+.sig-brand{flex-shrink:0;max-width:210px}
+.sig-brand h2{font-family:'Playfair Display',serif;font-size:19px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:5px}
+.ml .sig-brand h2{font-family:'Noto Sans Malayalam',sans-serif;font-size:16px}
+.sig-brand p{font-size:12px;color:rgba(255,255,255,.65)}
+.ml .sig-brand p{font-family:'Noto Sans Malayalam',sans-serif}
+.sig-div{width:1px;height:52px;background:rgba(255,255,255,.22);flex-shrink:0}
+.sig-facts{display:flex;gap:28px;flex:1;flex-wrap:wrap}
+.sf{text-align:center}
+.sf-n{font-family:'Space Mono',monospace;font-size:clamp(20px,2.8vw,34px);font-weight:700;color:var(--glow);display:block;line-height:1}
+.sf-l{font-size:10px;color:rgba(255,255,255,.6);letter-spacing:.07em;text-transform:uppercase;margin-top:3px}
+.ml .sf-l{font-family:'Noto Sans Malayalam',sans-serif;text-transform:none;letter-spacing:0;font-size:11px}
+
+/* LONG FORM */
+.lf{max-width:1280px;margin:0 auto;padding:0 20px 40px;display:grid;grid-template-columns:2fr 1fr;gap:32px}
+.lf-card{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.lf-img{aspect-ratio:4/3;background:linear-gradient(135deg,#0d2e18,#1a5a2e);position:relative;overflow:hidden;border-radius:2px}
+.lf-img::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 14px,rgba(200,134,10,.08) 14px,rgba(200,134,10,.08) 15px)}
+.lf-txt h3{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;line-height:1.25;margin-bottom:9px;transition:color .15s}
+.ml .lf-txt h3{font-family:'Noto Sans Malayalam',sans-serif;font-size:14px}
+.lf-txt:hover h3{color:var(--orbit)}
+.lf-txt p{font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:11px}
+.ml .lf-txt p{font-family:'Noto Sans Malayalam',sans-serif}
+.rm{font-family:'Space Mono',monospace;font-size:11px;color:var(--orbit);letter-spacing:.08em;text-transform:uppercase;display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.rm::after{content:'→'}
+.ml .rm{font-family:'Noto Sans Malayalam',sans-serif;text-transform:none;letter-spacing:0;font-size:12px}
+.lf-side{border-left:1px solid var(--rule);padding-left:24px}
+.lf-sh{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.ml .lf-sh{font-family:'Noto Sans Malayalam',sans-serif;text-transform:none;letter-spacing:0;font-size:12px}
+.ma{padding:13px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+.ma:last-child{border-bottom:none}
+.ma h4{font-family:'Playfair Display',serif;font-size:13px;line-height:1.35;margin-bottom:3px;transition:color .15s}
+.ml .ma h4{font-family:'Noto Sans Malayalam',sans-serif;font-size:11px}
+.ma:hover h4{color:var(--orbit)}
+.ma span{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace}
+
+/* SUBSCRIBE */
+.sub{background:#0d1a0d;padding:48px 20px;text-align:center}
+.sub-in{max-width:560px;margin:0 auto}
+.stag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--glow);margin-bottom:14px;display:block}
+.ml .stag{font-family:'Noto Sans Malayalam',sans-serif;text-transform:none;letter-spacing:0;font-size:12px}
+.sub h2{font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,34px);font-weight:900;color:#fff;line-height:1.15;margin-bottom:12px}
+.ml .sub h2{font-family:'Noto Sans Malayalam',sans-serif;font-size:clamp(17px,2.5vw,26px)}
+.sub p{color:rgba(255,255,255,.48);font-size:13px;margin-bottom:22px;line-height:1.7}
+.ml .sub p{font-family:'Noto Sans Malayalam',sans-serif}
+.sub-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.pb{padding:11px 22px;border-radius:3px;font-weight:700;font-size:13px;cursor:pointer;border:none;transition:all .2s}
+.ml .pb{font-family:'Noto Sans Malayalam',sans-serif}
+.pb1{background:var(--orbit-b);color:#fff}.pb1:hover{background:var(--orbit-d)}
+.pb2{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3)}.pb2:hover{border-color:#fff}
+
+/* PODCASTS */
+.pods{background:#1e2e1e;padding:40px 0}
+.pods-in{max-width:1280px;margin:0 auto;padding:0 20px}
+.pods-in .sl{padding:0 0 16px;max-width:unset;margin:0}
+.pods-in .sl h2{color:rgba(255,255,255,.4)}
+.pods-in .sl::after{background:rgba(255,255,255,.1)}
+.pod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pod{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);padding:16px;display:flex;gap:12px;cursor:pointer;transition:background .2s;border-radius:2px}
+.pod:hover{background:rgba(26,107,58,.18);border-color:rgba(26,107,58,.4)}
+.pod-ic{width:50px;height:50px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+.pi1{background:linear-gradient(135deg,#1a6b3a,#22913e)}.pi2{background:linear-gradient(135deg,#c8860a,#f5c842)}.pi3{background:linear-gradient(135deg,#1a3a6b,#2255aa)}
+.pod-info h4{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;line-height:1.3}
+.ml .pod-info h4{font-family:'Noto Sans Malayalam',sans-serif;font-size:12px}
+.pod-info p{font-size:11px;color:rgba(255,255,255,.45);line-height:1.5}
+.ml .pod-info p{font-family:'Noto Sans Malayalam',sans-serif}
+.ep{font-family:'Space Mono',monospace;font-size:10px;color:var(--glow);margin-top:5px;display:block}
+
+/* NEWSLETTER */
+.nl{max-width:1280px;margin:0 auto;padding:40px 20px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;border-bottom:1px solid var(--rule)}
+.nl-copy h2{font-family:'Playfair Display',serif;font-size:clamp(17px,1.9vw,24px);font-weight:700;line-height:1.2;margin-bottom:9px}
+.ml .nl-copy h2{font-family:'Noto Sans Malayalam',sans-serif;font-size:clamp(15px,1.7vw,20px)}
+.nl-copy p{font-size:13px;color:var(--muted);line-height:1.7}
+.ml .nl-copy p{font-family:'Noto Sans Malayalam',sans-serif}
+.nl-form{display:flex}
+.nl-inp{flex:1;padding:12px 14px;border:2px solid var(--orbit);border-right:none;background:#fff;font-size:13px;outline:none}
+.nl-btn{background:var(--orbit);color:#fff;border:2px solid var(--orbit);padding:12px 18px;font-weight:700;font-size:12px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.ml .nl-btn{font-family:'Noto Sans Malayalam',sans-serif}
+.nl-btn:hover{background:var(--orbit-d);border-color:var(--orbit-d)}
+
+/* FOOTER */
+footer{background:#0d1a0d;padding:40px 20px 20px}
+.ft-in{max-width:1280px;margin:0 auto}
+.ft-top{display:grid;grid-template-columns:220px 1fr 1fr 1fr;gap:32px;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:20px}
+.ft-brand .lo{color:#fff;font-size:20px}.ft-brand .l9{font-size:18px}
+.ft-brand p{font-size:12px;color:rgba(255,255,255,.35);margin-top:9px;line-height:1.65}
+.ml .ft-brand p{font-family:'Noto Sans Malayalam',sans-serif}
+.kbadge{display:inline-block;margin-top:9px;background:rgba(26,107,58,.3);border:1px solid rgba(26,107,58,.5);border-radius:3px;padding:2px 8px;font-size:11px;color:rgba(255,255,255,.6);font-family:'Noto Sans Malayalam',sans-serif}
+.ft-col h4{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.32);margin-bottom:12px}
+.ml .ft-col h4{font-family:'Noto Sans Malayalam',sans-serif;text-transform:none;letter-spacing:0;font-size:12px}
+.ft-col ul{list-style:none}
+.ft-col li{margin-bottom:8px}
+.ft-col a{font-size:12px;color:rgba(255,255,255,.55);transition:color .15s}
+.ml .ft-col a{font-family:'Noto Sans Malayalam',sans-serif}
+.ft-col a:hover{color:var(--glow)}
+.socs{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.soc{width:33px;height:33px;border-radius:50%;border:1px solid rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s}
+.soc:hover{background:var(--orbit);border-color:var(--orbit);color:#fff}
+.ft-bot{display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.22);font-family:'Space Mono',monospace;flex-wrap:wrap;gap:6px}
+.ml .ft-bot span{font-family:'Noto Sans Malayalam',sans-serif;letter-spacing:0;font-size:11px}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .hero{grid-template-columns:1fr}.hero-side{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+  .grid{grid-template-columns:1fr 1fr}.lf{grid-template-columns:1fr}
+  .lf-side{border-left:none;padding-left:0;border-top:1px solid var(--rule);padding-top:16px}
+  .pod-grid{grid-template-columns:1fr}.nl{grid-template-columns:1fr;gap:24px}
+  .ft-top{grid-template-columns:1fr 1fr}.nav-links{display:none}
+}
+@media(max-width:560px){
+  .grid{grid-template-columns:1fr}.hero-side{grid-template-columns:1fr}
+  .lf-card{grid-template-columns:1fr}.ft-top{grid-template-columns:1fr}
+  .sig-in{flex-direction:column;gap:16px}.cd-n{font-size:20px}.cd-box{min-width:50px;padding:6px 9px}
+}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="ld-logo">Orbit<b>9</b></div>
+  <div class="ld-txt">Loading Kerala's News...</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+  <div style="font-family:'Space Mono',monospace;font-size:9px;color:rgba(255,255,255,.3);margin-top:30px;letter-spacing:.1em">BUILD v2-2026-06-19</div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-t" id="ticker"></div></div>
+
+<!-- COUNTDOWN -->
+<div class="cd-bar">
+  <div class="cd-label">
+    <span class="cd-title" id="cd-title">Orbit9Media Grand Launch</span>
+    <span class="cd-sub" id="cd-sub">Counting down to · 17 August 2026</span>
+  </div>
+  <div class="cd-blocks">
+    <div class="cd-box"><span class="cd-n" id="cd-d">00</span><div class="cd-u" id="cd-ud">Days</div></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-box"><span class="cd-n" id="cd-h">00</span><div class="cd-u" id="cd-uh">Hours</div></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-box"><span class="cd-n" id="cd-m">00</span><div class="cd-u" id="cd-um">Mins</div></div>
+    <span class="cd-sep">:</span>
+    <div class="cd-box"><span class="cd-n" id="cd-s">00</span><div class="cd-u" id="cd-us">Secs</div></div>
+  </div>
+  <div class="cd-date"><small id="cd-lh">Event Date</small><span id="cd-ld">17 August 2026</span></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-in">
+    <a href="/" class="logo"><span class="lo">Orbit</span><span class="l9">9</span><span class="lm">Media</span><span class="lk">കേരളം</span></a>
+    <ul class="nav-links" id="navlinks">
+      <li><a href="#" class="act" id="nv1">Video</a></li>
+      <li><a href="#" id="nv2">Podcast</a></li>
+      <li><a href="#" id="nv3">Long Form</a></li>
+      <li><a href="#" id="nv4">Analysis</a></li>
+      <li><a href="#" id="nv5" onclick="swapLang(event)">മലയാളം</a></li>
+      <li><a href="/admin" class="nav-sub" id="nv6">Subscribe</a></li>
+    </ul>
+    <div class="lang-btn" onclick="swapLang(event)">
+      <span class="lo-opt on" id="lt-en">EN</span>
+      <span class="lo-opt" id="lt-ml">ML</span>
+    </div>
+  </div>
+</nav>
+
+<!-- DISTRICT TABS -->
+<div class="dtabs"><div class="dtabs-in" id="dtabs"></div></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-img" id="hero-img">
+    <div class="hero-txt">
+      <span class="eyebrow" id="h-cat"></span>
+      <h1 class="hero-h" id="h-title"></h1>
+      <p class="hero-by" id="h-by"></p>
+    </div>
+  </div>
+  <aside class="hero-side" id="h-side"></aside>
+</section>
+
+<!-- LATEST -->
+<div class="sl"><h2 id="sl-lat">Latest Kerala News</h2></div>
+<section class="grid" id="g-lat"></section>
+
+<!-- SIGNAL -->
+<div class="sig">
+  <div class="sig-in">
+    <div class="sig-brand"><h2 id="sig-h">Kerala's voice. Funded by Keralites.</h2><p id="sig-p">No corporate board. No political master. Only the truth.</p></div>
+    <div class="sig-div"></div>
+    <div class="sig-facts">
+      <div class="sf"><span class="sf-n">14</span><div class="sf-l" id="sf1">Districts Covered</div></div>
+      <div class="sf"><span class="sf-n">1.8L+</span><div class="sf-l" id="sf2">Kerala Subscribers</div></div>
+      <div class="sf"><span class="sf-n">0</span><div class="sf-l" id="sf3">Govt Ad Revenue</div></div>
+      <div class="sf"><span class="sf-n">9</span><div class="sf-l" id="sf4">Years Independent</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- LONG FORM -->
+<div class="sl"><h2 id="sl-lf">Long Form · In Depth</h2></div>
+<section class="lf">
+  <div class="lf-card">
+    <div class="lf-img"></div>
+    <div class="lf-txt" id="lf-main"></div>
+  </div>
+  <aside class="lf-side">
+    <div class="lf-sh" id="sl-also">Also in Long Form</div>
+    <div id="lf-side-items"></div>
+  </aside>
+</section>
+
+<!-- SUBSCRIBE -->
+<div class="sub">
+  <div class="sub-in">
+    <span class="stag" id="sub-tag">Pay to keep Kerala's news free</span>
+    <h2 id="sub-h">Good Kerala journalism has a cost. You choose if it survives.</h2>
+    <p id="sub-p">Orbit9Media does not run government ads, does not take political money, and answers to no corporate board. Every rupee comes from Malayalees who believe in independent reporting.</p>
+    <div class="sub-btns">
+      <button class="pb pb1" id="sb1">Subscribe — ₹299/month</button>
+      <button class="pb pb2" id="sb2">Annual Plan — ₹2499/year</button>
+    </div>
+  </div>
+</div>
+
+<!-- PODCASTS -->
+<div class="pods">
+  <div class="pods-in">
+    <div class="sl"><h2 id="sl-pod" style="color:rgba(255,255,255,.4)">Podcasts</h2></div>
+    <div class="pod-grid">
+      <div class="pod"><div class="pod-ic pi1">🎙</div><div class="pod-info"><h4 id="p1h">Kerala Vaaram — Weekly News Roundtable</h4><p id="p1p">Kerala's week, dissected by journalists who read every story so you don't have to.</p><span class="ep">EP 312 · Latest episode</span></div></div>
+      <div class="pod"><div class="pod-ic pi2">📡</div><div class="pod-info"><h4 id="p2h">Orbit9 Decodes — Media &amp; Policy Analysis</h4><p id="p2p">Who said what in Thiruvananthapuram, who stayed silent, and why the gap matters.</p><span class="ep">EP 98 · Latest episode</span></div></div>
+      <div class="pod"><div class="pod-ic pi3">🎬</div><div class="pod-info"><h4 id="p3h">Chalachithram — Malayalam Cinema Podcast</h4><p id="p3p">Malayalam films, OTT releases, and the culture conversations Kerala is having right now.</p><span class="ep">EP 74 · Latest episode</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MORE -->
+<div class="sl"><h2 id="sl-more">More Kerala Stories</h2></div>
+<section class="grid" id="g-more"></section>
+
+<!-- NEWSLETTER -->
+<section class="nl">
+  <div class="nl-copy">
+    <h2 id="nl-h">The Orbit9 Kerala Briefing — every morning in your inbox</h2>
+    <p id="nl-p">Three Kerala stories that matter, curated daily. In English and Malayalam. Always free.</p>
+  </div>
+  <div><div class="nl-form"><input class="nl-inp" type="email" id="nl-inp" placeholder="your@email.com"/><button class="nl-btn" id="nl-btn">Subscribe Free</button></div></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-in">
+    <div class="ft-top">
+      <div class="ft-brand">
+        <div class="logo"><span class="lo">Orbit</span><span class="l9">9</span></div>
+        <div class="kbadge" id="ft-badge">കേരളത്തിന്റെ ശബ്ദം</div>
+        <p id="ft-tag">Reader-supported independent media covering Kerala's 14 districts.</p>
+        <div class="socs"><div class="soc">𝕏</div><div class="soc">in</div><div class="soc">▶</div><div class="soc">📷</div><div class="soc">✈</div></div>
+      </div>
+      <div class="ft-col" id="fc1"></div>
+      <div class="ft-col" id="fc2"></div>
+      <div class="ft-col" id="fc3"></div>
+    </div>
+    <div class="ft-bot"><span id="ft-copy">© 2026 Orbit9Media Private Limited. All Rights Reserved.</span><span id="ft-tag2">Independent · Kerala-Funded · Unfiltered</span></div>
+  </div>
+</footer>
+
+<script>
+// ── ALL BILINGUAL STRINGS ─────────────────────────────
+const T = {
+  ticker: {
+    en:["Kerala Budget 2026-27: CM Satheesan proposes Invest Keralam & ₹192cr for MSMEs","Shigella outbreak: 110 cases in June — Kozhikode and Wayanad worst hit","KSEB power cuts 6PM–midnight till June 30 due to El Niño","Southwest monsoon active — orange alerts across Kerala","Kasaragod village office staff arrested for ₹5,000 bribe","Orbit9Media — Kerala's independent, reader-funded voice"],
+    ml:["കേരള ബജറ്റ് 2026-27: CM സതീശൻ ഇൻവെസ്റ്റ് കേരളം പ്രഖ്യാപിച്ചു","ഷിഗെല്ല: ജൂണിൽ 110 കേസ് — കോഴിക്കോടും വയനാടും ഏറ്റവും ബാധിച്ചു","KSEB: ജൂൺ 30 വരെ സന്ധ്യ 6 മുതൽ ലോഡ് ഷെഡ്ഡിംഗ്","കേരളത്തിൽ മൺസൂൺ സജീവം — ഓറഞ്ച് അലേർട്ട്","കാസർഗോഡ്: കൈക്കൂലി ആവശ്യപ്പെട്ട ജീവനക്കാരൻ അറസ്റ്റിൽ","ഓർബിറ്റ്9 മീഡിയ — കേരളത്തിന്റെ സ്വതന്ത്ര ശബ്ദം"]
+  },
+  cd:{title:{en:"Orbit9Media Grand Launch",ml:"ഓർബിറ്റ്9 മീഡിയ ഗ്രാൻഡ് ലോഞ്ച്"},sub:{en:"Counting down to · 17 August 2026",ml:"കൗണ്ട്ഡൗൺ · ഓഗസ്റ്റ് 17, 2026"},lh:{en:"Event Date",ml:"ഇവന്റ് തീയതി"},ld:{en:"17 August 2026",ml:"17 ഓഗസ്റ്റ് 2026"},d:{en:"Days",ml:"ദിവസം"},h:{en:"Hours",ml:"മണിക്കൂർ"},m:{en:"Mins",ml:"മിനിറ്റ്"},s:{en:"Secs",ml:"സെക്കൻഡ്"}},
+  nav:{v:{en:"Video",ml:"വീഡിയോ"},pod:{en:"Podcast",ml:"പോഡ്കാസ്റ്റ്"},lf:{en:"Long Form",ml:"ദീർഘ രൂപം"},an:{en:"Analysis",ml:"വിശകലനം"},lang:{en:"മലയാളം",ml:"English"},sub:{en:"Subscribe",ml:"സബ്‌സ്ക്രൈബ്"}},
+  distAll:{en:"All Kerala",ml:"എല്ലാ കേരളം"},
+  dists:[{en:"Thiruvananthapuram",ml:"തിരുവനന്തപുരം"},{en:"Kochi",ml:"കൊച്ചി"},{en:"Kozhikode",ml:"കോഴിക്കോട്"},{en:"Thrissur",ml:"തൃശ്ശൂർ"},{en:"Wayanad",ml:"വയനാട്"},{en:"Kannur",ml:"കണ്ണൂർ"},{en:"Malappuram",ml:"മലപ്പുറം"},{en:"Palakkad",ml:"പാലക്കാട്"},{en:"Kottayam",ml:"കോട്ടയം"},{en:"Idukki",ml:"ഇടുക്കി"},{en:"Alappuzha",ml:"ആലപ്പുഴ"},{en:"Kollam",ml:"കൊല്ലം"},{en:"Kasaragod",ml:"കാസർഗോഡ്"}],
+  sl:{lat:{en:"Latest Kerala News",ml:"ഏറ്റവും പുതിയ കേരള വാർത്ത"},lf:{en:"Long Form · In Depth",ml:"ദീർഘ രൂപം · ആഴത്തിൽ"},pod:{en:"Podcasts",ml:"പോഡ്കാസ്റ്റുകൾ"},more:{en:"More Kerala Stories",ml:"കൂടുതൽ കേരള വാർത്തകൾ"},also:{en:"Also in Long Form",ml:"ദീർഘ രൂപത്തിൽ കൂടുതൽ"}},
+  sig:{h:{en:"Kerala's voice. Funded by Keralites.",ml:"കേരളത്തിന്റെ ശബ്ദം. കേരളീയർ ഫണ്ട് ചെയ്യുന്നു."},p:{en:"No corporate board. No political master. Only the truth.",ml:"കോർപ്പറേറ്റ് ബോർഡ് ഇല്ല. രാഷ്ട്രീയ ആശ്രയം ഇല്ല. സത്യം മാത്രം."},f1:{en:"Districts Covered",ml:"ജില്ലകൾ"},f2:{en:"Kerala Subscribers",ml:"കേരള വരിക്കാർ"},f3:{en:"Govt Ad Revenue",ml:"സർക്കാർ പരസ്യ വരുമാനം"},f4:{en:"Years Independent",ml:"വർഷം സ്വതന്ത്രം"}},
+  lf:{cat:{en:"Investigation · Budget Analysis",ml:"അന്വേഷണം · ബജറ്റ് വിശകലനം"},h:{en:"The ₹20,000 crore question: What happened to Kerala finances under LDF and what Satheesan inherits",ml:"₹20,000 കോടിയുടെ ചോദ്യം: LDF ഭരണത്തിൽ കേരളത്തിന്റെ ധനകാര്യം എന്ത് സംഭവിച്ചു"},p:{en:"CM Satheesan says ₹20,000 crore out of a planned ₹35,000 crore was missing when UDF took office. Orbit9Media unpacks the numbers.",ml:"₹35,000 കോടി ആസൂത്രണം ചെയ്തതിൽ ₹20,000 കോടി UDF അധികാരമേറ്റപ്പോൾ കാണില്ലായിരുന്നു എന്ന് സി.എം. സതീശൻ."},rm:{en:"Read the full report",ml:"പൂർണ്ണ റിപ്പോർട്ട് വായിക്കുക"},
+  side:[{en:"Sabarimala gold-plated roof shows black marks — Travancore Devaswom Board orders inspection",ml:"ശബരിമല സ്വർണ്ണ മേൽക്കൂരയിൽ കറുത്ത പാടുകൾ — ദേവസ്വം ബോർഡ് പരിശോധന"},{en:"Kasaragod healthcare gap: Stalled trauma care incomplete medical college and community plea",ml:"കാസർഗോഡ്: ട്രോമ കെയർ തടസ്സം, അപൂർണ്ണ മെഡിക്കൽ കോളേജ്"},{en:"PIL challenges Kerala free bus travel scheme — does it violate equality before law",ml:"കേരളത്തിലെ സൗജന്യ ബസ് യാത്ര സ്കീം ഭരണഘടനാ ലംഘനമോ? PIL ഹൈക്കോടതിയിൽ"},{en:"Monsoon 2026: El Nino weakens Kerala rains — threat to agriculture and water security",ml:"മൺസൂൺ 2026: എൽ നിനോ കേരളത്തിലെ മഴ ദുർബലമാക്കി"}],
+  dates:["June 17, 2026","June 16, 2026","June 15, 2026","June 14, 2026"]},
+  sub:{tag:{en:"Pay to keep Kerala's news free",ml:"കേരളത്തിന്റെ വാർത്ത സ്വതന്ത്രമാക്കാൻ പണം നൽകൂ"},h:{en:"Good Kerala journalism has a cost. You choose if it survives.",ml:"നല്ല കേരള പത്രപ്രവർത്തനത്തിന് ചെലവുണ്ട്. അത് നിലനിൽക്കണോ എന്ന് നിങ്ങൾ തീരുമാനിക്കൂ."},p:{en:"Orbit9Media does not run government ads, does not take political money, and answers to no corporate board.",ml:"ഓർബിറ്റ്9 മീഡിയ സർക്കാർ പരസ്യം നടത്തുന്നില്ല, രാഷ്ട്രീയ പണം സ്വീകരിക്കുന്നില്ല."},b1:{en:"Subscribe — ₹299/month",ml:"സബ്സ്ക്രൈബ് — ₹299/മാസം"},b2:{en:"Annual Plan — ₹2499/year",ml:"വാർഷിക പ്ലാൻ — ₹2499/വർഷം"}},
+  pods:{p1h:{en:"Kerala Vaaram — Weekly News Roundtable",ml:"കേരള വാരം — വാർത്ത ചർച്ചാ മേശ"},p1p:{en:"Kerala's week, dissected by journalists who read every story.",ml:"ജേർണലിസ്റ്റുകൾ ഓരോ വാർത്തയും വായിച്ച് കേരളത്തിന്റെ ആഴ്ചയെ വിശകലനം ചെയ്യുന്നു."},p2h:{en:"Orbit9 Decodes — Media & Policy Analysis",ml:"ഓർബിറ്റ്9 ഡീകോഡ്സ് — മാധ്യമ & നയ വിശകലനം"},p2p:{en:"Who said what in Thiruvananthapuram, who stayed silent.",ml:"തിരുവനന്തപുരത്ത് ആര് എന്ത് പറഞ്ഞു, ആര് മൗനം പാലിച്ചു."},p3h:{en:"Chalachithram — Malayalam Cinema Podcast",ml:"ചലച്ചിത്രം — മലയാള സിനിമ പോഡ്കാസ്റ്റ്"},p3p:{en:"Malayalam films, OTT releases, and culture conversations.",ml:"മലയാള സിനിമ, OTT റിലീസുകൾ, സാംസ്കാരിക ചർച്ചകൾ."}},
+  nl:{h:{en:"The Orbit9 Kerala Briefing — every morning in your inbox",ml:"ഓർബിറ്റ്9 കേരള ബ്രീഫിംഗ് — എല്ലാ ദിവസവും ഇൻബോക്സിൽ"},p:{en:"Three Kerala stories that matter, curated daily. Always free.",ml:"പ്രധാനപ്പെട്ട മൂന്ന് കേരള വാർത്തകൾ, ദിവസവും. എപ്പോഴും സൗജന്യം."},ph:{en:"your@email.com",ml:"നിങ്ങളുടെ@ഇമെയിൽ.com"},btn:{en:"Subscribe Free",ml:"സൗജന്യ സബ്‌സ്ക്രിപ്ഷൻ"}},
+  ft:{badge:{en:"Voice of Kerala",ml:"കേരളത്തിന്റെ ശബ്ദം"},tag:{en:"Reader-supported independent media covering Kerala's 14 districts.",ml:"കേരളത്തിലെ 14 ജില്ലകൾ ഉൾക്കൊള്ളുന്ന വായനക്കാർ പിന്തുണയ്ക്കുന്ന സ്വതന്ത്ര മാധ്യമം."},
+  c1h:{en:"About",ml:"ഞങ്ങളെ കുറിച്ച്"},c1l:{en:["About Us","Meet the Team","Contact Us","Privacy Policy","Terms of Service"],ml:["ഞങ്ങളെ കുറിച്ച്","ടീമിനെ കാണൂ","ഞങ്ങളെ ബന്ധപ്പെടൂ","സ്വകാര്യതാ നയം","സേവന നിബന്ധനകൾ"]},
+  c2h:{en:"Subscription",ml:"സബ്‌സ്ക്രിപ്ഷൻ"},c2l:{en:["Subscribe","Student Plan","Account Details","Subscriber FAQ","Legal Fund"],ml:["സബ്‌സ്ക്രൈബ്","വിദ്യാർത്ഥി പ്ലാൻ","അക്കൗണ്ട് വിവരങ്ങൾ","FAQ","നിയമ ഫണ്ട്"]},
+  c3h:{en:"Explore",ml:"കൂടുതൽ"},c3l:{en:["മലയാളം","Newsletters","Interviews","Documentaries","District Reports"],ml:["English","ന്യൂസ്‌ലെറ്ററുകൾ","അഭിമുഖങ്ങൾ","ഡോക്യുമെന്ററികൾ","ജില്ലാ റിപ്പോർട്ടുകൾ"]},
+  copy:{en:"© 2026 Orbit9Media Private Limited. All Rights Reserved.",ml:"© 2026 ഓർബിറ്റ്9 മീഡിയ പ്രൈവറ്റ് ലിമിറ്റഡ്. എല്ലാ അവകാശങ്ങളും നിക്ഷിപ്തം."},tag2:{en:"Independent · Kerala-Funded · Unfiltered",ml:"സ്വതന്ത്രം · കേരള-ഫണ്ടഡ് · അൺഫിൽട്ടേർഡ്"}}
+};
+
+let lang = 'en';
+const t = k => T[k][lang];
+const tx = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+
+// COUNTDOWN
+function tick(){
+  const diff=new Date('2026-08-17T00:00:00')-new Date();
+  if(diff<=0) return;
+  const p=n=>String(Math.floor(n)).padStart(2,'0');
+  document.getElementById('cd-d').textContent=p(diff/86400000);
+  document.getElementById('cd-h').textContent=p((diff%86400000)/3600000);
+  document.getElementById('cd-m').textContent=p((diff%3600000)/60000);
+  document.getElementById('cd-s').textContent=p((diff%60000)/1000);
+}
+tick(); setInterval(tick,1000);
+
+// CARDS
+function cards(arr,lang){
+  return arr.map(a=>`
+    <article class="card">
+      <div class="card-img"><div class="${a.thumb}"></div></div>
+      <span class="csrc">${a.source||''}</span>
+      <span class="eyebrow" style="color:var(--orbit-b)">${a.category||''}</span>
+      <h4>${a.title||''}</h4>
+      <p class="cmeta">${a.meta||''}</p>
+    </article>`).join('');
+}
+
+// FOOTER COL
+function fcol(id,head,links){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.innerHTML=`<h4>${head}</h4><ul>${links.map(l=>`<li><a href="#">${l}</a></li>`).join('')}</ul>`;
+}
+
+// DISTRICT TABS
+function buildTabs(){
+  const c=T.distAll[lang];
+  const ds=T.dists.map(d=>d[lang]);
+  document.getElementById('dtabs').innerHTML=
+    `<div class="dtab on" onclick="setTab(this)">${c}</div>`+
+    ds.map(d=>`<div class="dtab" onclick="setTab(this)">${d}</div>`).join('');
+}
+function setTab(el){
+  document.querySelectorAll('.dtab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// MAIN RENDER
+async function render(){
+  const ml=lang==='ml';
+  document.body.className=ml?'ml':'';
+  document.getElementById('html-root').lang=lang;
+
+  // Ticker
+  const tks=T.ticker[lang].map(t=>`<span>${t}</span>`).join('');
+  document.getElementById('ticker').innerHTML=tks+tks;
+
+  // Countdown
+  const cd=T.cd;
+  tx('cd-title',cd.title[lang]); tx('cd-sub',cd.sub[lang]);
+  tx('cd-lh',cd.lh[lang]);       tx('cd-ld',cd.ld[lang]);
+  tx('cd-ud',cd.d[lang]);        tx('cd-uh',cd.h[lang]);
+  tx('cd-um',cd.m[lang]);        tx('cd-us',cd.s[lang]);
+
+  // Nav
+  const nv=T.nav;
+  tx('nv1',nv.v[lang]); tx('nv2',nv.pod[lang]); tx('nv3',nv.lf[lang]);
+  tx('nv4',nv.an[lang]); tx('nv5',nv.lang[lang]); tx('nv6',nv.sub[lang]);
+  document.getElementById('lt-en').classList.toggle('on',!ml);
+  document.getElementById('lt-ml').classList.toggle('on',ml);
+
+  // Tabs
+  buildTabs();
+
+  // Section labels
+  const sl=T.sl;
+  tx('sl-lat',sl.lat[lang]); tx('sl-lf',sl.lf[lang]);
+  tx('sl-pod',sl.pod[lang]); tx('sl-more',sl.more[lang]); tx('sl-also',sl.also[lang]);
+
+  // Signal
+  const sg=T.sig;
+  tx('sig-h',sg.h[lang]); tx('sig-p',sg.p[lang]);
+  tx('sf1',sg.f1[lang]); tx('sf2',sg.f2[lang]); tx('sf3',sg.f3[lang]); tx('sf4',sg.f4[lang]);
+
+  // Long form
+  const lf=T.lf;
+  document.getElementById('lf-main').innerHTML=`
+    <span class="eyebrow">${lf.cat[lang]}</span>
+    <h3>${lf.h[lang]}</h3>
+    <p>${lf.p[lang]}</p>
+    <span class="rm">${lf.rm[lang]}</span>`;
+  document.getElementById('lf-side-items').innerHTML=
+    lf.side.map((s,i)=>`<div class="ma"><h4>${s[lang]}</h4><span>${lf.dates[i]}</span></div>`).join('');
+
+  // Subscribe
+  const sb=T.sub;
+  tx('sub-tag',sb.tag[lang]); tx('sub-h',sb.h[lang]); tx('sub-p',sb.p[lang]);
+  tx('sb1',sb.b1[lang]); tx('sb2',sb.b2[lang]);
+
+  // Podcasts
+  const pd=T.pods;
+  tx('p1h',pd.p1h[lang]); tx('p1p',pd.p1p[lang]);
+  tx('p2h',pd.p2h[lang]); tx('p2p',pd.p2p[lang]);
+  tx('p3h',pd.p3h[lang]); tx('p3p',pd.p3p[lang]);
+
+  // Newsletter
+  const nl=T.nl;
+  tx('nl-h',nl.h[lang]); tx('nl-p',nl.p[lang]);
+  tx('nl-btn',nl.btn[lang]);
+  document.getElementById('nl-inp').placeholder=nl.ph[lang];
+
+  // Footer
+  const ft=T.ft;
+  tx('ft-badge',ft.badge[lang]); tx('ft-tag',ft.tag[lang]);
+  tx('ft-copy',ft.copy[lang]); tx('ft-tag2',ft.tag2[lang]);
+  fcol('fc1',ft.c1h[lang],ft.c1l[lang]);
+  fcol('fc2',ft.c2h[lang],ft.c2l[lang]);
+  fcol('fc3',ft.c3h[lang],ft.c3l[lang]);
+
+  // ── FETCH ARTICLES FROM API ───────────────────────────
+  try {
+    const res = await fetch(`/api/news?lang=${lang}`);
+    const d   = await res.json();
+    const all = d.articles || [];
+
+    const hero    = all.find(a=>a.type==='hero');
+    const sidebar = all.filter(a=>a.type==='sidebar');
+    const latest  = all.filter(a=>a.type==='latest');
+    const more    = all.filter(a=>a.type==='more');
+
+    // Hero
+    if(hero){
+      tx('h-cat',hero.category||'');
+      tx('h-title',hero.title||'');
+      tx('h-by',hero.source||'');
+    }
+
+    // Sidebar
+    document.getElementById('h-side').innerHTML = sidebar.map(a=>`
+      <div class="sc">
+        <span class="eyebrow">${a.category||''}</span>
+        <h3>${a.title||''}</h3>
+        <p>${a.excerpt||''}</p>
+      </div>`).join('') || '<div class="sc"><p style="color:var(--muted)">No sidebar articles yet. Add them in the admin panel.</p></div>';
+
+    // Grids
+    document.getElementById('g-lat').innerHTML  = latest.length ? cards(latest,lang) : '<p style="padding:20px;color:var(--muted);grid-column:1/-1">No latest articles yet.</p>';
+    document.getElementById('g-more').innerHTML = more.length   ? cards(more,lang)   : '<p style="padding:20px;color:var(--muted);grid-column:1/-1">No more stories yet.</p>';
+
+  } catch(e) {
+    console.error('API error:',e);
+    document.getElementById('h-title').textContent = 'Welcome to Orbit9Media — Kerala News';
+    document.getElementById('h-side').innerHTML = '<div class="sc"><p style="color:var(--muted)">Loading articles... Please refresh.</p></div>';
+  }
+}
+
+function swapLang(e){
+  if(e) e.preventDefault();
+  lang = lang==='en'?'ml':'en';
+  render();
+}
+
+window.addEventListener('DOMContentLoaded', async ()=>{
+  try {
+    await render();
+  } catch(e) {
+    console.error('Render failed:', e);
+  }
+  setTimeout(()=>document.getElementById('loading').classList.add('hide'), 1500);
+});
+</script>
+</body>
+</html>
