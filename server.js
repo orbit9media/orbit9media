@@ -26,7 +26,16 @@ if (fs.existsSync(ROOT)) {
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(PUBLIC));
+
+// Disable all caching so updates always show immediately
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
+app.use(express.static(PUBLIC, { etag: false, lastModified: false, cacheControl: false }));
 
 // ── DB helpers ──────────────────────────────────────────
 function readDB() {
