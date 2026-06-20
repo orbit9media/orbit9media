@@ -235,6 +235,7 @@ footer{background:#0d1a0d;padding:40px 20px 20px}
   <div class="ld-logo">Orbit<b>9</b></div>
   <div class="ld-txt">Loading Kerala's News...</div>
   <div class="ld-bar"><div class="ld-fill"></div></div>
+  <div style="font-family:'Space Mono',monospace;font-size:9px;color:rgba(255,255,255,.3);margin-top:30px;letter-spacing:.1em">BUILD v2-2026-06-19</div>
 </div>
 
 <!-- TICKER -->
@@ -569,7 +570,11 @@ function swapLang(e){
 }
 
 window.addEventListener('DOMContentLoaded', async ()=>{
-  await render();
+  try {
+    await render();
+  } catch(e) {
+    console.error('Render failed:', e);
+  }
   setTimeout(()=>document.getElementById('loading').classList.add('hide'), 1500);
 });
 </script>
